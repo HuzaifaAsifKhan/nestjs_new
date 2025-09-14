@@ -1,10 +1,15 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class AuthCredentialDto {
   @IsString()
-  @IsNotEmpty()
+  @MinLength(4, { message: 'username is too short' })
+  @MaxLength(20,  { message: 'username is too long' })
   username: string;
 
-  @IsNotEmpty()
+  @IsString()
+  @MinLength(8, { message: 'password is too short' })
+  @MaxLength(20, { message: 'password is too long' })
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
+  , { message: 'password too weak' })
   password: string;
 }

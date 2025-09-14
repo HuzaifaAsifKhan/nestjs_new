@@ -3,7 +3,7 @@ import { TaskStatus } from './tasks.interface';
 import { CreateTaskDTO } from './dto/create.task.dto';
 import { GetTaskFilterDTO } from './dto/get.task.filter.dto';
 
-@Entity('tasks')
+@Entity()
 export class Task extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
