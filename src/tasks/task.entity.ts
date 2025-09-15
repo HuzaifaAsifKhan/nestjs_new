@@ -13,6 +13,7 @@ import { InternalServerErrorException, Logger } from '@nestjs/common';
 
 @Entity()
 export class Task extends BaseEntity {
+  private static logger = new Logger('TaskEntity');
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -41,9 +42,19 @@ export class Task extends BaseEntity {
     task.description = description;
     task.status = TaskStatus.OPEN;
     task.user = user;
-    await task.save();
-    delete task.user; // we don't want to return the user with the task
-    return task;
+    try {
+      await task.save();
+      delete task.user; // we don't want to return the user with the task
+      return task;
+    } catch (error) {
+      this.logger.error(
+        `Failed to create a task for user "${user.username}". Data: ${JSON.stringify(
+          createTaskDTO,
+        )}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException();
+    }
   }
 
   static async getAllTasks(
@@ -66,6 +77,12 @@ export class Task extends BaseEntity {
     try {
       return await query.getMany();
     } catch (error) {
+      this.logger.error(
+        `Failed to get tasks for user "${user.username}". Filters: ${JSON.stringify(
+          filter,
+        )}`,
+        error.stack,
+      );
       throw new InternalServerErrorException();
     }
   }
