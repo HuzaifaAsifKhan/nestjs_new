@@ -6,6 +6,12 @@ import { timestamp } from 'rxjs';
 async function bootstrap() {
   const logger = new Logger('bootstrap', { timestamp: true });
   const app = await NestFactory.create(AppModule);
+
+  if (process.env.NODE_ENV == 'development') {
+    app.enableCors();
+  } else {
+    app.enableCors();
+  }
   await app.listen(process.env.PORT ?? 3000);
   logger.log('Application runs successfully');
 }
