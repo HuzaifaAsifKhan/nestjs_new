@@ -20,8 +20,8 @@ import { GetTaskFilterDTO } from './dto/get.task.filter.dto';
 import { TaskStatusValidationPipe } from './pipes/task.status.validation.pipe';
 import { Task } from './task.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { User } from 'src/auth/user.entity';
-import { GetUser } from 'src/auth/dto/get.user.decorator';
+import { User } from '../auth/user.entity';
+import { GetUser } from '../auth/dto/get.user.decorator';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())

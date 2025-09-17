@@ -1,26 +1,24 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { Repository } from 'typeorm';
 import { AuthCredentialDto } from './dto/auth.credential.dto';
 import { JwtService } from '@nestjs/jwt';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
   private logger = new Logger('AuthService', { timestamp: true });
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private userRepository: AuthRepository,
     private jwtService: JwtService,
   ) {}
 
   signUp(authCredentialDto: AuthCredentialDto): Promise<void> {
-    return User.createUser(authCredentialDto);
+    return this.userRepository.createUser(authCredentialDto);
   }
 
   async signIn(authCredentialDto: AuthCredentialDto): Promise<string> {
     try {
-      const username = await User.validateUser(authCredentialDto);
+      const username =
+        await this.userRepository.validateUser(authCredentialDto);
       const payload = { username };
       const token = this.jwtService.sign(payload);
       this.logger.debug(`User ${username} signed in successfully`);
